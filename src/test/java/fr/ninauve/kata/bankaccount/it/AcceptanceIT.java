@@ -12,11 +12,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.when;
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AcceptanceIT {
+
+    private static final String INPUT_ACCOUNT_NUMBER = "123456789";
+    private static final String INPUT_AMOUNT = "4200";
+    private static final String FORMATTED_DEPOSIT = "2020-09-12 11:43;123456789;deposit;4200;4200";
 
     private Main main;
 
@@ -44,5 +48,19 @@ public class AcceptanceIT {
         inOrder.verify(console).printLines(MessageTestConstants.MENU);
         inOrder.verify(console).waitAndGetInput();
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void should_deposit() {
+
+        when(console.waitAndGetInput()).thenReturn(
+                MenuTestConstants.VALUE_DEPOSIT,
+                INPUT_ACCOUNT_NUMBER,
+                INPUT_AMOUNT,
+                MenuTestConstants.VALUE_EXIT);
+
+        main.execute();
+
+        verify(console).printLines(singletonList(FORMATTED_DEPOSIT));
     }
 }

@@ -7,15 +7,22 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 
+import static fr.ninauve.kata.bankaccount.action.MenuItem.DEPOSIT;
+import static fr.ninauve.kata.bankaccount.action.MenuItem.EXIT;
+
 @Component
 public class MenuAction implements Action {
 
     private final Console console;
+    private final Session session;
+    private final ReadAccountNumberAction readAccountNumberAction;
 
     @Autowired
-    public MenuAction(Console console) {
+    public MenuAction(Console console, Session session, ReadAccountNumberAction readAccountNumberAction) {
 
         this.console = console;
+        this.session = session;
+        this.readAccountNumberAction = readAccountNumberAction;
     }
 
     @Override
@@ -23,8 +30,15 @@ public class MenuAction implements Action {
 
         console.printLines(MessageConstants.MENU);
         final String input = console.waitAndGetInput();
-        if (!Objects.equals(input, "2")) {
+        if (!Objects.equals(input, DEPOSIT.getInputValue())
+                && !Objects.equals(input, EXIT.getInputValue())) {
             return badInput();
+        }
+
+        session.clear();
+        if (Objects.equals(input, DEPOSIT.getInputValue())) {
+            session.setMenuItem(DEPOSIT);
+            return readAccountNumberAction;
         }
 
         return null;

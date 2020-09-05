@@ -22,11 +22,15 @@ class MenuActionTest {
 
     @Mock
     private Console console;
+    @Mock
+    private Session session;
+    @Mock
+    private ReadAccountNumberAction readAccountNumberAction;
 
     @BeforeEach
     public void setUp() {
 
-        this.menuAction = new MenuAction(console);
+        this.menuAction = new MenuAction(console, session, readAccountNumberAction);
     }
 
     @Test
@@ -54,5 +58,19 @@ class MenuActionTest {
         inOrder.verify(console).printLines(MessageTestConstants.MENU);
         inOrder.verify(console).waitAndGetInput();
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void should_read_account_number_deposit() {
+
+        when(console.waitAndGetInput())
+                .thenReturn(MenuTestConstants.VALUE_DEPOSIT);
+
+        final Action actual = menuAction.execute();
+        assertSame(readAccountNumberAction, actual);
+
+        final InOrder inOrder = inOrder(session);
+        inOrder.verify(session).clear();
+        inOrder.verify(session).setMenuItem(MenuItem.DEPOSIT);
     }
 }

@@ -1,6 +1,5 @@
-package fr.ninauve.kata.bankaccount.it;
+package fr.ninauve.kata.bankaccount.action;
 
-import fr.ninauve.kata.bankaccount.Main;
 import fr.ninauve.kata.bankaccount.MenuTestConstants;
 import fr.ninauve.kata.bankaccount.MessageTestConstants;
 import fr.ninauve.kata.bankaccount.io.Console;
@@ -10,15 +9,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.when;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AcceptanceIT {
+class MenuActionTest {
 
-    private Main main;
+    private MenuAction menuAction;
 
     @Mock
     private Console console;
@@ -26,10 +26,19 @@ public class AcceptanceIT {
     @BeforeEach
     public void setUp() {
 
-        final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("application-context-test.xml");
-        final DelegateConsole delegateConsole = ctx.getBean(DelegateConsole.class);
-        delegateConsole.setConsole(console);
-        this.main = ctx.getBean(Main.class);
+        this.menuAction = new MenuAction(console);
+    }
+
+    @Test
+    public void should_validate() {
+
+        when(console.waitAndGetInput())
+                .thenReturn("BAD");
+
+        final Action actual = menuAction.execute();
+
+        assertSame(menuAction, actual);
+        verify(console).printLines(singletonList(MessageTestConstants.BAD_INPUT_MENU));
     }
 
     @Test
@@ -38,8 +47,9 @@ public class AcceptanceIT {
         when(console.waitAndGetInput())
                 .thenReturn(MenuTestConstants.VALUE_EXIT);
 
-        main.execute();
+        final Action actual = menuAction.execute();
 
+        assertNull(actual);
         final InOrder inOrder = inOrder(console);
         inOrder.verify(console).printLines(MessageTestConstants.MENU);
         inOrder.verify(console).waitAndGetInput();

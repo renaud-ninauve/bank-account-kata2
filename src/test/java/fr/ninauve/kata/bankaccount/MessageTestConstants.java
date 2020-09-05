@@ -1,10 +1,10 @@
-package fr.ninauve.kata.bankaccount.it;
+package fr.ninauve.kata.bankaccount;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
-public interface MessageConstants {
+public interface MessageTestConstants {
 
     String WHAT_ACCOUNT_NUMBER = "Account number?";
     String WHAT_AMOUNT = "Amount in cents?";

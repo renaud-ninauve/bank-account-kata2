@@ -1,5 +1,6 @@
 package fr.ninauve.kata.bankaccount;
 
+import fr.ninauve.kata.bankaccount.action.Action;
 import fr.ninauve.kata.bankaccount.action.MenuAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -18,6 +19,8 @@ public class Main {
 
     public void execute() {
 
+        Action action = menuAction;
+        while ((action = action.execute()) != null) ;
     }
 
     public static void main(String... args) {

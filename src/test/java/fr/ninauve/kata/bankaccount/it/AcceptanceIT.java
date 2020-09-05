@@ -5,18 +5,19 @@ import fr.ninauve.kata.bankaccount.io.Console;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.Collections;
-
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AcceptanceIT {
 
     private Main main;
+
     @Mock
     private Console console;
 
@@ -30,10 +31,16 @@ public class AcceptanceIT {
     }
 
     @Test
-    public void should_print_hello_world() {
+    public void should_exit() {
+
+        when(console.waitAndGetInput())
+                .thenReturn(MenuConstants.VALUE_EXIT);
 
         main.execute();
 
-        verify(console).printLines(Collections.singletonList("Hello world"));
+        final InOrder inOrder = inOrder(console);
+        inOrder.verify(console).printLines(MessageConstants.MENU);
+        inOrder.verify(console).waitAndGetInput();
+        inOrder.verifyNoMoreInteractions();
     }
 }

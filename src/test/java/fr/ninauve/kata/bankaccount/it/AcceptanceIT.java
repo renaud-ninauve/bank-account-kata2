@@ -19,8 +19,10 @@ import static org.mockito.Mockito.*;
 public class AcceptanceIT {
 
     private static final String INPUT_ACCOUNT_NUMBER = "123456789";
-    private static final String INPUT_AMOUNT = "4200";
+    private static final String INPUT_DEPOSIT_AMOUNT = "4200";
+    private static final String INPUT_RETRIEVAL_AMOUNT = "1100";
     private static final String FORMATTED_DEPOSIT = "2020-09-12 11:43;123456789;deposit;4200;4200";
+    private static final String FORMATTED_RETRIEVAL = "2020-09-12 11:43;123456789;retrieval;1100;3100";
 
     private Main main;
 
@@ -56,11 +58,28 @@ public class AcceptanceIT {
         when(console.waitAndGetInput()).thenReturn(
                 MenuTestConstants.VALUE_DEPOSIT,
                 INPUT_ACCOUNT_NUMBER,
-                INPUT_AMOUNT,
+                INPUT_DEPOSIT_AMOUNT,
                 MenuTestConstants.VALUE_EXIT);
 
         main.execute();
 
         verify(console).printLines(singletonList(FORMATTED_DEPOSIT));
+    }
+
+    @Test
+    public void should_deposit_then_retrieve() {
+
+        when(console.waitAndGetInput()).thenReturn(
+                MenuTestConstants.VALUE_DEPOSIT,
+                INPUT_ACCOUNT_NUMBER,
+                INPUT_DEPOSIT_AMOUNT,
+                MenuTestConstants.VALUE_RETRIEVAL,
+                INPUT_ACCOUNT_NUMBER,
+                INPUT_RETRIEVAL_AMOUNT,
+                MenuTestConstants.VALUE_EXIT);
+
+        main.execute();
+
+        verify(console).printLines(singletonList(FORMATTED_RETRIEVAL));
     }
 }

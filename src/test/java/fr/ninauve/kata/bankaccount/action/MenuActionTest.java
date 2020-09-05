@@ -26,11 +26,13 @@ class MenuActionTest {
     private Session session;
     @Mock
     private ReadAccountNumberAction readAccountNumberAction;
+    @Mock
+    private HistoryAction historyAction;
 
     @BeforeEach
     public void setUp() {
 
-        this.menuAction = new MenuAction(console, session, readAccountNumberAction);
+        this.menuAction = new MenuAction(console, session, readAccountNumberAction, historyAction);
     }
 
     @Test
@@ -86,5 +88,19 @@ class MenuActionTest {
         final InOrder inOrder = inOrder(session);
         inOrder.verify(session).clear();
         inOrder.verify(session).setMenuItem(MenuItem.RETRIEVAL);
+    }
+
+    @Test
+    public void should_navigate_to_history() {
+
+        when(console.waitAndGetInput())
+                .thenReturn(MenuTestConstants.VALUE_HISTORY);
+
+        final Action actual = menuAction.execute();
+        assertSame(historyAction, actual);
+
+        final InOrder inOrder = inOrder(session);
+        inOrder.verify(session).clear();
+        inOrder.verify(session).setMenuItem(MenuItem.HISTORY);
     }
 }

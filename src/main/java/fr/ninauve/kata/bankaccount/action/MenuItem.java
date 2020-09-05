@@ -1,7 +1,7 @@
 package fr.ninauve.kata.bankaccount.action;
 
 public enum MenuItem {
-    DEPOSIT("1"), RETRIEVAL("2"), EXIT("3");
+    DEPOSIT("1"), RETRIEVAL("2"), HISTORY("3"), EXIT("4");
 
     private final String inputValue;
 

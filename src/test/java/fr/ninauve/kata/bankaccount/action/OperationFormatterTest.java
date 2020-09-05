@@ -1,5 +1,6 @@
 package fr.ninauve.kata.bankaccount.action;
 
+import fr.ninauve.kata.bankaccount.domain.Operation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,14 @@ class OperationFormatterTest {
     @Test
     public void should_format_deposit() {
 
-        final String actual = operationFormatter.format(ZONED_DATE_TIME, ACCOUNT_NUMBER, OperationFormatter.OperationType.DEPOSIT, 1234, 5678);
+        final Operation operation = new Operation(
+                Operation.OperationType.DEPOSIT,
+                ZONED_DATE_TIME,
+                1234,
+                5678
+        );
+
+        final String actual = operationFormatter.format(ACCOUNT_NUMBER, operation);
 
         assertEquals("2020-09-12 11:43;111111;deposit;1234;5678", actual);
     }
@@ -35,7 +43,14 @@ class OperationFormatterTest {
     @Test
     public void should_format_retrieval() {
 
-        final String actual = operationFormatter.format(ZONED_DATE_TIME, ACCOUNT_NUMBER, OperationFormatter.OperationType.RETRIEVAL, 1234, 5678);
+        final Operation operation = new Operation(
+                Operation.OperationType.RETRIEVAL,
+                ZONED_DATE_TIME,
+                1234,
+                5678
+        );
+
+        final String actual = operationFormatter.format(ACCOUNT_NUMBER, operation);
 
         assertEquals("2020-09-12 11:43;111111;retrieval;1234;5678", actual);
     }

@@ -16,13 +16,15 @@ public class MenuAction implements Action {
     private final Console console;
     private final Session session;
     private final ReadAccountNumberAction readAccountNumberAction;
+    private final HistoryAction historyAction;
 
     @Autowired
-    public MenuAction(Console console, Session session, @Lazy ReadAccountNumberAction readAccountNumberAction) {
+    public MenuAction(Console console, Session session, @Lazy ReadAccountNumberAction readAccountNumberAction, @Lazy HistoryAction historyAction) {
 
         this.console = console;
         this.session = session;
         this.readAccountNumberAction = readAccountNumberAction;
+        this.historyAction = historyAction;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class MenuAction implements Action {
         final String input = console.waitAndGetInput();
         if (!Objects.equals(input, DEPOSIT.getInputValue())
                 && !Objects.equals(input, RETRIEVAL.getInputValue())
+                && !Objects.equals(input, HISTORY.getInputValue())
                 && !Objects.equals(input, EXIT.getInputValue())) {
             return badInput();
         }
@@ -44,6 +47,10 @@ public class MenuAction implements Action {
         if (Objects.equals(input, RETRIEVAL.getInputValue())) {
             session.setMenuItem(RETRIEVAL);
             return readAccountNumberAction;
+        }
+        if (Objects.equals(input, HISTORY.getInputValue())) {
+            session.setMenuItem(HISTORY);
+            return historyAction;
         }
 
         return null;

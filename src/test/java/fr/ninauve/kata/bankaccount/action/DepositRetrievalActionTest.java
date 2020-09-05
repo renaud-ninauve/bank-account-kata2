@@ -2,6 +2,7 @@ package fr.ninauve.kata.bankaccount.action;
 
 import fr.ninauve.kata.bankaccount.domain.Account;
 import fr.ninauve.kata.bankaccount.domain.AccountRepository;
+import fr.ninauve.kata.bankaccount.domain.Operation;
 import fr.ninauve.kata.bankaccount.io.Console;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.*;
 
-import static fr.ninauve.kata.bankaccount.action.OperationFormatter.OperationType.DEPOSIT;
-import static fr.ninauve.kata.bankaccount.action.OperationFormatter.OperationType.RETRIEVAL;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
@@ -53,6 +52,8 @@ class DepositRetrievalActionTest {
     @Test
     public void should_print_deposit() {
 
+        final Operation operation = new Operation(
+                Operation.OperationType.DEPOSIT, ZONED_DATE_TIME, AMOUNT, BALANCE);
         when(session.getMenuItem())
                 .thenReturn(MenuItem.DEPOSIT);
         when(session.getAccountNumber())
@@ -61,22 +62,24 @@ class DepositRetrievalActionTest {
                 .thenReturn(AMOUNT);
         when(accountRepository.getOrCreate(ACCOUNT_NUMBER))
                 .thenReturn(account);
-        when(account.getBalance())
-                .thenReturn(BALANCE);
+        when(account.getLastOperationOrNull())
+                .thenReturn(operation);
         when(operationFormatter.format(
-                ZONED_DATE_TIME, ACCOUNT_NUMBER, DEPOSIT, AMOUNT, BALANCE
+                ACCOUNT_NUMBER, operation
         )).thenReturn(FORMATTED_OPERATION);
 
         final Action actual = depositRetrievalAction.execute();
 
         assertSame(menuAction, actual);
-        verify(account).deposit(AMOUNT);
+        verify(account).deposit(AMOUNT, ZONED_DATE_TIME);
         verify(console).printLines(singletonList(FORMATTED_OPERATION));
     }
 
     @Test
     public void should_print_retrieval() {
 
+        final Operation operation = new Operation(
+                Operation.OperationType.RETRIEVAL, ZONED_DATE_TIME, AMOUNT, BALANCE);
         when(session.getMenuItem())
                 .thenReturn(MenuItem.RETRIEVAL);
         when(session.getAccountNumber())
@@ -85,16 +88,16 @@ class DepositRetrievalActionTest {
                 .thenReturn(AMOUNT);
         when(accountRepository.getOrCreate(ACCOUNT_NUMBER))
                 .thenReturn(account);
-        when(account.getBalance())
-                .thenReturn(BALANCE);
+        when(account.getLastOperationOrNull())
+                .thenReturn(operation);
         when(operationFormatter.format(
-                ZONED_DATE_TIME, ACCOUNT_NUMBER, RETRIEVAL, AMOUNT, BALANCE
+                ACCOUNT_NUMBER, operation
         )).thenReturn(FORMATTED_OPERATION);
 
         final Action actual = depositRetrievalAction.execute();
 
         assertSame(menuAction, actual);
-        verify(account).retrieval(AMOUNT);
+        verify(account).retrieval(AMOUNT, ZONED_DATE_TIME);
         verify(console).printLines(singletonList(FORMATTED_OPERATION));
     }
 }

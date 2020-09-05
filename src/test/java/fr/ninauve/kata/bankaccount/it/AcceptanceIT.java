@@ -98,7 +98,8 @@ public class AcceptanceIT {
                 INPUT_ACCOUNT_NUMBER,
                 INPUT_RETRIEVAL_AMOUNT,
                 MenuTestConstants.VALUE_HISTORY,
-                INPUT_ACCOUNT_NUMBER);
+                INPUT_ACCOUNT_NUMBER,
+                MenuTestConstants.VALUE_EXIT);
 
         main.execute();
 

@@ -2,6 +2,7 @@ package fr.ninauve.kata.bankaccount.action;
 
 import fr.ninauve.kata.bankaccount.domain.Account;
 import fr.ninauve.kata.bankaccount.domain.AccountRepository;
+import fr.ninauve.kata.bankaccount.domain.Operation;
 import fr.ninauve.kata.bankaccount.io.Console;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -37,21 +38,20 @@ public class DepositRetrievalAction implements Action {
 
         final String accountNumber = session.getAccountNumber();
         final long amount = session.getAmount();
+        final ZonedDateTime dateTime = ZonedDateTime.now(clock);
 
         final Account account = accountRepository.getOrCreate(accountNumber);
-        final OperationFormatter.OperationType operationType;
         if (session.getMenuItem() == MenuItem.DEPOSIT) {
-            operationType = OperationFormatter.OperationType.DEPOSIT;
-            account.deposit(amount);
+            account.deposit(amount, dateTime);
         } else {
-            operationType = OperationFormatter.OperationType.RETRIEVAL;
-            account.retrieval(amount);
+            account.retrieval(amount, dateTime);
         }
 
-        final long balance = account.getBalance();
-        final String formattedOperation = operationFormatter.format(
-                ZonedDateTime.now(clock), accountNumber, operationType, amount, balance);
+        final Operation lastOperation = account.getLastOperationOrNull();
+        final String formattedOperation = operationFormatter.format(accountNumber, lastOperation);
         console.printLines(singletonList(formattedOperation));
+
         return menuAction;
+
     }
 }

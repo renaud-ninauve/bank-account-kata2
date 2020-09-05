@@ -73,4 +73,18 @@ class MenuActionTest {
         inOrder.verify(session).clear();
         inOrder.verify(session).setMenuItem(MenuItem.DEPOSIT);
     }
+
+    @Test
+    public void should_read_account_number_retrieval() {
+
+        when(console.waitAndGetInput())
+                .thenReturn(MenuTestConstants.VALUE_RETRIEVAL);
+
+        final Action actual = menuAction.execute();
+        assertSame(readAccountNumberAction, actual);
+
+        final InOrder inOrder = inOrder(session);
+        inOrder.verify(session).clear();
+        inOrder.verify(session).setMenuItem(MenuItem.RETRIEVAL);
+    }
 }

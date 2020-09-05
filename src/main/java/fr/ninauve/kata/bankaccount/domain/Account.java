@@ -11,6 +11,12 @@ public class Account {
         this.balance += amount;
     }
 
+    public void retrieval(long amount) {
+        Preconditions.checkArgument(amount > 0, "amount should be greater than 0");
+
+        this.balance -= amount;
+    }
+
     public long getBalance() {
         return balance;
     }

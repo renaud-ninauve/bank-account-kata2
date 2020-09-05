@@ -12,14 +12,14 @@ public class ReadAmountAction implements Action {
 
     private final Console console;
     private final Session session;
-    private final DepositAction depositAction;
+    private final DepositRetrievalAction depositRetrievalAction;
     private final AmountInputValidator amountInputValidator;
 
     @Autowired
-    public ReadAmountAction(Console console, Session session, @Lazy DepositAction depositAction, AmountInputValidator amountInputValidator) {
+    public ReadAmountAction(Console console, Session session, @Lazy DepositRetrievalAction depositRetrievalAction, AmountInputValidator amountInputValidator) {
         this.console = console;
         this.session = session;
-        this.depositAction = depositAction;
+        this.depositRetrievalAction = depositRetrievalAction;
         this.amountInputValidator = amountInputValidator;
     }
 
@@ -30,7 +30,7 @@ public class ReadAmountAction implements Action {
         final String input = console.waitAndGetInput();
         if (amountInputValidator.isValid(input)) {
             session.setAmount(Long.parseLong(input));
-            return depositAction;
+            return depositRetrievalAction;
         }
 
         console.printLines(singletonList(MessageConstants.BAD_PARAM_AMOUNT));

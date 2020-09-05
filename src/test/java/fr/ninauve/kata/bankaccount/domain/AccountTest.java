@@ -43,4 +43,32 @@ class AccountTest {
 
         assertEquals(4200, actual);
     }
+
+    @Test
+    public void fail_when_retrieval_amount_is_negative() {
+
+        final Account account = new Account();
+
+        assertThrows(IllegalArgumentException.class, () -> account.retrieval(-1));
+    }
+
+    @Test
+    public void fail_when_retrieval_amount_is_zero() {
+
+        final Account account = new Account();
+
+        assertThrows(IllegalArgumentException.class, () -> account.retrieval(0));
+    }
+
+    @Test
+    public void balance_is_equal_to_deposit_minus_retrieval() {
+
+        final Account account = new Account();
+        account.deposit(4200);
+        account.retrieval(1100);
+
+        final long actual = account.getBalance();
+
+        assertEquals(3100, actual);
+    }
 }

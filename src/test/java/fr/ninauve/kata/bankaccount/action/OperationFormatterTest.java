@@ -27,8 +27,16 @@ class OperationFormatterTest {
     @Test
     public void should_format_deposit() {
 
-        final String actual = operationFormatter.formatDeposit(ZONED_DATE_TIME, ACCOUNT_NUMBER, 1234, 5678);
+        final String actual = operationFormatter.format(ZONED_DATE_TIME, ACCOUNT_NUMBER, OperationFormatter.OperationType.DEPOSIT, 1234, 5678);
 
         assertEquals("2020-09-12 11:43;111111;deposit;1234;5678", actual);
+    }
+
+    @Test
+    public void should_format_retrieval() {
+
+        final String actual = operationFormatter.format(ZONED_DATE_TIME, ACCOUNT_NUMBER, OperationFormatter.OperationType.RETRIEVAL, 1234, 5678);
+
+        assertEquals("2020-09-12 11:43;111111;retrieval;1234;5678", actual);
     }
 }

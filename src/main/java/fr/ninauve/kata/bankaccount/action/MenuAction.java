@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 
-import static fr.ninauve.kata.bankaccount.action.MenuItem.DEPOSIT;
-import static fr.ninauve.kata.bankaccount.action.MenuItem.EXIT;
+import static fr.ninauve.kata.bankaccount.action.MenuItem.*;
 
 @Component
 public class MenuAction implements Action {
@@ -32,6 +31,7 @@ public class MenuAction implements Action {
         console.printLines(MessageConstants.MENU);
         final String input = console.waitAndGetInput();
         if (!Objects.equals(input, DEPOSIT.getInputValue())
+                && !Objects.equals(input, RETRIEVAL.getInputValue())
                 && !Objects.equals(input, EXIT.getInputValue())) {
             return badInput();
         }
@@ -39,6 +39,10 @@ public class MenuAction implements Action {
         session.clear();
         if (Objects.equals(input, DEPOSIT.getInputValue())) {
             session.setMenuItem(DEPOSIT);
+            return readAccountNumberAction;
+        }
+        if (Objects.equals(input, RETRIEVAL.getInputValue())) {
+            session.setMenuItem(RETRIEVAL);
             return readAccountNumberAction;
         }
 

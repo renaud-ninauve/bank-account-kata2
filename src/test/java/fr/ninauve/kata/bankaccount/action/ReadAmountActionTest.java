@@ -25,14 +25,14 @@ class ReadAmountActionTest {
     @Mock
     private Session session;
     @Mock
-    private DepositAction depositAction;
+    private DepositRetrievalAction depositRetrievalAction;
     @Mock
     private AmountInputValidator amountInputValidator;
 
     @BeforeEach
     public void setUp() {
 
-        this.readAmountAction = new ReadAmountAction(console, session, depositAction, amountInputValidator);
+        this.readAmountAction = new ReadAmountAction(console, session, depositRetrievalAction, amountInputValidator);
     }
 
     @Test
@@ -45,7 +45,7 @@ class ReadAmountActionTest {
 
         final Action actual = readAmountAction.execute();
 
-        assertSame(depositAction, actual);
+        assertSame(depositRetrievalAction, actual);
         verify(console).printLines(singletonList(MessageTestConstants.WHAT_AMOUNT));
         verify(session).setAmount(AMOUNT);
         verifyNoMoreInteractions(session);

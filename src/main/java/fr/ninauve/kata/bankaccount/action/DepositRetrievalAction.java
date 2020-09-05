@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 import static java.util.Collections.singletonList;
 
 @Component
-public class DepositAction implements Action {
+public class DepositRetrievalAction implements Action {
 
     private final Console console;
     private final Session session;
@@ -23,7 +23,7 @@ public class DepositAction implements Action {
     private final OperationFormatter operationFormatter;
 
     @Autowired
-    public DepositAction(Console console, Session session, Clock clock, AccountRepository accountRepository, @Lazy MenuAction menuAction, OperationFormatter operationFormatter) {
+    public DepositRetrievalAction(Console console, Session session, Clock clock, AccountRepository accountRepository, @Lazy MenuAction menuAction, OperationFormatter operationFormatter) {
         this.console = console;
         this.session = session;
         this.clock = clock;
@@ -39,11 +39,19 @@ public class DepositAction implements Action {
         final long amount = session.getAmount();
 
         final Account account = accountRepository.getOrCreate(accountNumber);
-        account.deposit(amount);
+        final OperationFormatter.OperationType operationType;
+        if (session.getMenuItem() == MenuItem.DEPOSIT) {
+            operationType = OperationFormatter.OperationType.DEPOSIT;
+            account.deposit(amount);
+        } else {
+            operationType = OperationFormatter.OperationType.RETRIEVAL;
+            account.retrieval(amount);
+        }
 
         final long balance = account.getBalance();
-        final String formattedDeposit = operationFormatter.formatDeposit(ZonedDateTime.now(clock), accountNumber, amount, balance);
-        console.printLines(singletonList(formattedDeposit));
+        final String formattedOperation = operationFormatter.format(
+                ZonedDateTime.now(clock), accountNumber, operationType, amount, balance);
+        console.printLines(singletonList(formattedOperation));
         return menuAction;
     }
 }

@@ -1,5 +1,8 @@
 package fr.ninauve.kata.bankaccount.action;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Session {
 
     private MenuItem menuItem;

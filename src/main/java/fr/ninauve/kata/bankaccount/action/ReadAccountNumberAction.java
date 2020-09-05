@@ -2,6 +2,7 @@ package fr.ninauve.kata.bankaccount.action;
 
 import fr.ninauve.kata.bankaccount.io.Console;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import static java.util.Collections.singletonList;
@@ -14,7 +15,7 @@ public class ReadAccountNumberAction implements Action {
     private final ReadAmountAction readAmountAction;
 
     @Autowired
-    public ReadAccountNumberAction(Console console, Session session, ReadAmountAction readAmountAction) {
+    public ReadAccountNumberAction(Console console, Session session, @Lazy ReadAmountAction readAmountAction) {
 
         this.console = console;
         this.session = session;

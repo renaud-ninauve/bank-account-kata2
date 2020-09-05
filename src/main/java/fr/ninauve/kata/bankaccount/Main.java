@@ -1,26 +1,23 @@
 package fr.ninauve.kata.bankaccount;
 
-import fr.ninauve.kata.bankaccount.io.Console;
+import fr.ninauve.kata.bankaccount.action.MenuAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
-import static java.util.Collections.singletonList;
-
 @Component
 public class Main {
 
-    private final Console console;
+    private final MenuAction menuAction;
 
     @Autowired
-    public Main(Console console) {
+    public Main(MenuAction menuAction) {
 
-        this.console = console;
+        this.menuAction = menuAction;
     }
 
     public void execute() {
 
-        console.printLines(singletonList("Hello world"));
     }
 
     public static void main(String... args) {

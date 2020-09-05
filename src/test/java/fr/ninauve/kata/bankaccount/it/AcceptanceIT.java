@@ -12,6 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
 
@@ -23,6 +26,7 @@ public class AcceptanceIT {
     private static final String INPUT_RETRIEVAL_AMOUNT = "1100";
     private static final String FORMATTED_DEPOSIT = "2020-09-12 11:43;123456789;deposit;4200;4200";
     private static final String FORMATTED_RETRIEVAL = "2020-09-12 11:43;123456789;retrieval;1100;3100";
+    private static final List<String> FORMATTED_HISTORY = Arrays.asList(FORMATTED_DEPOSIT, FORMATTED_RETRIEVAL);
 
     private Main main;
 
@@ -81,5 +85,23 @@ public class AcceptanceIT {
         main.execute();
 
         verify(console).printLines(singletonList(FORMATTED_RETRIEVAL));
+    }
+
+    @Test
+    public void should_print_history() {
+
+        when(console.waitAndGetInput()).thenReturn(
+                MenuTestConstants.VALUE_DEPOSIT,
+                INPUT_ACCOUNT_NUMBER,
+                INPUT_DEPOSIT_AMOUNT,
+                MenuTestConstants.VALUE_RETRIEVAL,
+                INPUT_ACCOUNT_NUMBER,
+                INPUT_RETRIEVAL_AMOUNT,
+                MenuTestConstants.VALUE_HISTORY,
+                INPUT_ACCOUNT_NUMBER);
+
+        main.execute();
+
+        verify(console).printLines(FORMATTED_HISTORY);
     }
 }

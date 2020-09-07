@@ -11,6 +11,7 @@ public class SystemConsole implements Console {
     @Override
     public void printLines(List<String> lines) {
 
+        System.out.println("");
         for (String line : lines) {
             System.out.println(line);
         }
@@ -20,8 +21,6 @@ public class SystemConsole implements Console {
     public String waitAndGetInput() {
 
         System.out.print("> ");
-        final String input = new Scanner(System.in).next();
-        System.out.println("");
-        return input;
+        return new Scanner(System.in).next();
     }
 }

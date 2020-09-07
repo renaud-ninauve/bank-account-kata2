@@ -19,6 +19,9 @@ public class SystemConsole implements Console {
     @Override
     public String waitAndGetInput() {
 
-        return new Scanner(System.in).next();
+        System.out.print("> ");
+        final String input = new Scanner(System.in).next();
+        System.out.println("");
+        return input;
     }
 }

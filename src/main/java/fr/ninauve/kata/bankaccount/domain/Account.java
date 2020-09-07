@@ -18,7 +18,7 @@ public class Account {
         historyOldestFirst.add(operation);
     }
 
-    public void retrieval(long amount, ZonedDateTime dateTime) {
+    public void retrieve(long amount, ZonedDateTime dateTime) {
         Preconditions.checkArgument(amount > 0, "amount should be greater than 0");
         Preconditions.checkNotNull(dateTime, "date shouldn't be null");
 

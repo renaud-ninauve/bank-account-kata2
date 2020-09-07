@@ -45,7 +45,7 @@ public class DepositRetrievalAction implements Action {
         if (session.getMenuItem() == MenuItem.DEPOSIT) {
             account.deposit(amount, dateTime);
         } else {
-            account.retrieval(amount, dateTime);
+            account.retrieve(amount, dateTime);
         }
 
         final Operation lastOperation = account.getLastOperationOrNull();

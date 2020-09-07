@@ -60,7 +60,7 @@ class AccountTest {
 
         final Account account = new Account();
 
-        assertThrows(IllegalArgumentException.class, () -> account.retrieval(-1, ZONED_DATE_TIME));
+        assertThrows(IllegalArgumentException.class, () -> account.retrieve(-1, ZONED_DATE_TIME));
     }
 
     @Test
@@ -68,7 +68,7 @@ class AccountTest {
 
         final Account account = new Account();
 
-        assertThrows(IllegalArgumentException.class, () -> account.retrieval(0, ZONED_DATE_TIME));
+        assertThrows(IllegalArgumentException.class, () -> account.retrieve(0, ZONED_DATE_TIME));
     }
 
     @Test
@@ -76,7 +76,7 @@ class AccountTest {
 
         final Account account = new Account();
         account.deposit(4200, ZONED_DATE_TIME);
-        account.retrieval(1100, ZONED_DATE_TIME);
+        account.retrieve(1100, ZONED_DATE_TIME);
 
         final long actual = account.getBalance();
 
@@ -93,7 +93,7 @@ class AccountTest {
 
         final Account account = new Account();
         account.deposit(4200, ZONED_DATE_TIME);
-        account.retrieval(1100, ZONED_DATE_TIME);
+        account.retrieve(1100, ZONED_DATE_TIME);
 
         final List<Operation> actual = account.getHistoryOldestFirst();
 
@@ -107,7 +107,7 @@ class AccountTest {
 
         final Account account = new Account();
         account.deposit(4200, ZONED_DATE_TIME);
-        account.retrieval(1100, ZONED_DATE_TIME);
+        account.retrieve(1100, ZONED_DATE_TIME);
 
         final Operation actual = account.getLastOperationOrNull();
 

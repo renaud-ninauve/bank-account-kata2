@@ -107,7 +107,7 @@ class DepositRetrievalActionTest {
         assertSame(nextAction, actual);
         verify(scenario).pollNextAction();
 
-        verify(account).retrieval(AMOUNT, ZONED_DATE_TIME);
+        verify(account).retrieve(AMOUNT, ZONED_DATE_TIME);
         verify(console).printLines(singletonList(FORMATTED_OPERATION));
     }
 }

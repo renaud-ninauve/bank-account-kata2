@@ -1,11 +1,11 @@
 package fr.ninauve.kata.bankaccount.action;
 
+import fr.ninauve.kata.bankaccount.Scenario;
 import fr.ninauve.kata.bankaccount.domain.Account;
 import fr.ninauve.kata.bankaccount.domain.AccountRepository;
 import fr.ninauve.kata.bankaccount.domain.Operation;
 import fr.ninauve.kata.bankaccount.io.Console;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -16,20 +16,21 @@ import static java.util.Collections.singletonList;
 @Component
 public class DepositRetrievalAction implements Action {
 
+    private final Scenario scenario;
     private final Console console;
     private final Session session;
     private final Clock clock;
     private final AccountRepository accountRepository;
-    private final MenuAction menuAction;
     private final OperationFormatter operationFormatter;
 
     @Autowired
-    public DepositRetrievalAction(Console console, Session session, Clock clock, AccountRepository accountRepository, @Lazy MenuAction menuAction, OperationFormatter operationFormatter) {
+    public DepositRetrievalAction(Scenario scenario, Console console, Session session, Clock clock, AccountRepository accountRepository, OperationFormatter operationFormatter) {
+
+        this.scenario = scenario;
         this.console = console;
         this.session = session;
         this.clock = clock;
         this.accountRepository = accountRepository;
-        this.menuAction = menuAction;
         this.operationFormatter = operationFormatter;
     }
 
@@ -51,7 +52,6 @@ public class DepositRetrievalAction implements Action {
         final String formattedOperation = operationFormatter.format(accountNumber, lastOperation);
         console.printLines(singletonList(formattedOperation));
 
-        return menuAction;
-
+        return scenario.pollNextAction();
     }
 }

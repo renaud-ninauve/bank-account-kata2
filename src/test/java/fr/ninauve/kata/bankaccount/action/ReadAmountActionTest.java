@@ -1,6 +1,7 @@
 package fr.ninauve.kata.bankaccount.action;
 
 import fr.ninauve.kata.bankaccount.MessageTestConstants;
+import fr.ninauve.kata.bankaccount.Scenario;
 import fr.ninauve.kata.bankaccount.io.Console;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,23 +22,27 @@ class ReadAmountActionTest {
     private ReadAmountAction readAmountAction;
 
     @Mock
+    private Scenario scenario;
+    @Mock
+    private Action nextAction;
+    @Mock
     private Console console;
     @Mock
     private Session session;
-    @Mock
-    private DepositRetrievalAction depositRetrievalAction;
     @Mock
     private AmountInputValidator amountInputValidator;
 
     @BeforeEach
     public void setUp() {
 
-        this.readAmountAction = new ReadAmountAction(console, session, depositRetrievalAction, amountInputValidator);
+        this.readAmountAction = new ReadAmountAction(scenario, console, session, amountInputValidator);
     }
 
     @Test
     public void should_read_amount_then_deposit() {
 
+        when(scenario.pollNextAction())
+                .thenReturn(nextAction);
         when(console.waitAndGetInput())
                 .thenReturn(INPUT_AMOUNT);
         when(amountInputValidator.isValid(INPUT_AMOUNT))
@@ -45,7 +50,9 @@ class ReadAmountActionTest {
 
         final Action actual = readAmountAction.execute();
 
-        assertSame(depositRetrievalAction, actual);
+        assertSame(nextAction, actual);
+        verify(scenario).pollNextAction();
+
         verify(console).printLines(singletonList(MessageTestConstants.WHAT_AMOUNT));
         verify(session).setAmount(AMOUNT);
         verifyNoMoreInteractions(session);

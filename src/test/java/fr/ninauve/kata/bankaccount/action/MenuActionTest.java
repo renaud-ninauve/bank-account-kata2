@@ -2,6 +2,7 @@ package fr.ninauve.kata.bankaccount.action;
 
 import fr.ninauve.kata.bankaccount.MenuTestConstants;
 import fr.ninauve.kata.bankaccount.MessageTestConstants;
+import fr.ninauve.kata.bankaccount.Scenario;
 import fr.ninauve.kata.bankaccount.io.Console;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,18 +22,18 @@ class MenuActionTest {
     private MenuAction menuAction;
 
     @Mock
+    private Scenario scenario;
+    @Mock
+    private Action nextAction;
+    @Mock
     private Console console;
     @Mock
     private Session session;
-    @Mock
-    private ReadAccountNumberAction readAccountNumberAction;
-    @Mock
-    private HistoryAction historyAction;
 
     @BeforeEach
     public void setUp() {
 
-        this.menuAction = new MenuAction(console, session, readAccountNumberAction, historyAction);
+        this.menuAction = new MenuAction(scenario, console, session);
     }
 
     @Test
@@ -60,47 +61,62 @@ class MenuActionTest {
         inOrder.verify(console).printLines(MessageTestConstants.MENU);
         inOrder.verify(console).waitAndGetInput();
         inOrder.verifyNoMoreInteractions();
+        verifyZeroInteractions(scenario);
     }
 
     @Test
     public void should_read_account_number_deposit() {
 
+        when(scenario.pollNextAction())
+                .thenReturn(nextAction);
         when(console.waitAndGetInput())
                 .thenReturn(MenuTestConstants.VALUE_DEPOSIT);
 
         final Action actual = menuAction.execute();
-        assertSame(readAccountNumberAction, actual);
+
+        assertSame(nextAction, actual);
+        verify(scenario).pollNextAction();
 
         final InOrder inOrder = inOrder(session);
         inOrder.verify(session).clear();
         inOrder.verify(session).setMenuItem(MenuItem.DEPOSIT);
+
+        verify(scenario).initDepositOrRetrieval();
     }
 
     @Test
     public void should_read_account_number_retrieval() {
 
+        when(scenario.pollNextAction())
+                .thenReturn(nextAction);
         when(console.waitAndGetInput())
                 .thenReturn(MenuTestConstants.VALUE_RETRIEVAL);
 
         final Action actual = menuAction.execute();
-        assertSame(readAccountNumberAction, actual);
+        assertSame(nextAction, actual);
 
         final InOrder inOrder = inOrder(session);
         inOrder.verify(session).clear();
         inOrder.verify(session).setMenuItem(MenuItem.RETRIEVAL);
+
+        verify(scenario).initDepositOrRetrieval();
     }
 
     @Test
     public void should_navigate_to_history() {
 
+        when(scenario.pollNextAction())
+                .thenReturn(nextAction);
         when(console.waitAndGetInput())
                 .thenReturn(MenuTestConstants.VALUE_HISTORY);
 
         final Action actual = menuAction.execute();
-        assertSame(historyAction, actual);
+        assertSame(nextAction, actual);
 
         final InOrder inOrder = inOrder(session);
         inOrder.verify(session).clear();
         inOrder.verify(session).setMenuItem(MenuItem.HISTORY);
+
+        verify(scenario).initHistory();
     }
 }

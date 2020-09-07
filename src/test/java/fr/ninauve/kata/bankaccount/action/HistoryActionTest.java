@@ -1,5 +1,6 @@
 package fr.ninauve.kata.bankaccount.action;
 
+import fr.ninauve.kata.bankaccount.Scenario;
 import fr.ninauve.kata.bankaccount.domain.Account;
 import fr.ninauve.kata.bankaccount.domain.AccountRepository;
 import fr.ninauve.kata.bankaccount.domain.Operation;
@@ -39,26 +40,33 @@ class HistoryActionTest {
     private HistoryAction historyAction;
 
     @Mock
+    private Scenario scenario;
+    @Mock
+    private Action nextAction;
+    @Mock
     private Console console;
+    @Mock
+    private Session session;
     @Mock
     private AccountRepository accountRepository;
     @Mock
     private OperationFormatter operationFormatter;
-    @Mock
-    private MenuAction menuAction;
     @Mock
     private Account account;
 
     @BeforeEach
     public void setUp() {
 
-        this.historyAction = new HistoryAction(console, accountRepository, operationFormatter, menuAction);
+        when(scenario.pollNextAction())
+                .thenReturn(nextAction);
+
+        this.historyAction = new HistoryAction(scenario, console, session, accountRepository, operationFormatter);
     }
 
     @Test
     public void should_print_history_then_return_menu() {
 
-        when(console.waitAndGetInput())
+        when(session.getAccountNumber())
                 .thenReturn(ACCOUNT_NUMBER);
         when(accountRepository.getOrCreate(ACCOUNT_NUMBER))
                 .thenReturn(account);
@@ -73,7 +81,9 @@ class HistoryActionTest {
 
         final Action actual = historyAction.execute();
 
-        assertSame(menuAction, actual);
+        assertSame(nextAction, actual);
+        verify(scenario).pollNextAction();
+
         verify(console).printLines(FORMATTED_OPERATIONS);
     }
 }

@@ -1,8 +1,8 @@
 package fr.ninauve.kata.bankaccount.action;
 
+import fr.ninauve.kata.bankaccount.Scenario;
 import fr.ninauve.kata.bankaccount.io.Console;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,18 +13,16 @@ import static fr.ninauve.kata.bankaccount.action.MenuItem.*;
 @Component
 public class MenuAction implements Action {
 
+    private final Scenario scenario;
     private final Console console;
     private final Session session;
-    private final ReadAccountNumberAction readAccountNumberAction;
-    private final HistoryAction historyAction;
 
     @Autowired
-    public MenuAction(Console console, Session session, @Lazy ReadAccountNumberAction readAccountNumberAction, @Lazy HistoryAction historyAction) {
+    public MenuAction(Scenario scenario, Console console, Session session) {
 
+        this.scenario = scenario;
         this.console = console;
         this.session = session;
-        this.readAccountNumberAction = readAccountNumberAction;
-        this.historyAction = historyAction;
     }
 
     @Override
@@ -42,15 +40,18 @@ public class MenuAction implements Action {
         session.clear();
         if (Objects.equals(input, DEPOSIT.getInputValue())) {
             session.setMenuItem(DEPOSIT);
-            return readAccountNumberAction;
+            scenario.initDepositOrRetrieval();
+            return scenario.pollNextAction();
         }
         if (Objects.equals(input, RETRIEVAL.getInputValue())) {
             session.setMenuItem(RETRIEVAL);
-            return readAccountNumberAction;
+            scenario.initDepositOrRetrieval();
+            return scenario.pollNextAction();
         }
         if (Objects.equals(input, HISTORY.getInputValue())) {
             session.setMenuItem(HISTORY);
-            return historyAction;
+            scenario.initHistory();
+            return scenario.pollNextAction();
         }
 
         return null;

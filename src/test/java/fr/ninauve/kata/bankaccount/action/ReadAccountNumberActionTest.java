@@ -1,6 +1,7 @@
 package fr.ninauve.kata.bankaccount.action;
 
 import fr.ninauve.kata.bankaccount.MessageTestConstants;
+import fr.ninauve.kata.bankaccount.Scenario;
 import fr.ninauve.kata.bankaccount.io.Console;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,16 +21,21 @@ class ReadAccountNumberActionTest {
     private ReadAccountNumberAction readAccountNumberAction;
 
     @Mock
+    private Scenario scenario;
+    @Mock
+    private Action nextAction;
+    @Mock
     private Console console;
     @Mock
     private Session session;
-    @Mock
-    private ReadAmountAction readAmountAction;
 
     @BeforeEach
     public void setUp() {
 
-        this.readAccountNumberAction = new ReadAccountNumberAction(console, session, readAmountAction);
+        when(scenario.pollNextAction())
+                .thenReturn(nextAction);
+
+        this.readAccountNumberAction = new ReadAccountNumberAction(scenario, console, session);
     }
 
     @Test
@@ -40,7 +46,9 @@ class ReadAccountNumberActionTest {
 
         final Action actual = readAccountNumberAction.execute();
 
-        assertSame(readAmountAction, actual);
+        assertSame(nextAction, actual);
+        verify(scenario).pollNextAction();
+
         verify(console).printLines(singletonList(MessageTestConstants.WHAT_ACCOUNT_NUMBER));
         verify(session).setAccountNumber(ACCOUNT_NUMBER);
         verifyNoMoreInteractions(session);

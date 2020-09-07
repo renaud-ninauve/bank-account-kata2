@@ -1,5 +1,6 @@
 package fr.ninauve.kata.bankaccount.action;
 
+import fr.ninauve.kata.bankaccount.Scenario;
 import fr.ninauve.kata.bankaccount.domain.Account;
 import fr.ninauve.kata.bankaccount.domain.AccountRepository;
 import fr.ninauve.kata.bankaccount.domain.Operation;
@@ -31,6 +32,10 @@ class DepositRetrievalActionTest {
     private DepositRetrievalAction depositRetrievalAction;
 
     @Mock
+    private Scenario scenario;
+    @Mock
+    private Action nextAction;
+    @Mock
     private Console console;
     @Mock
     private Session session;
@@ -39,14 +44,15 @@ class DepositRetrievalActionTest {
     @Mock
     private Account account;
     @Mock
-    private MenuAction menuAction;
-    @Mock
     private OperationFormatter operationFormatter;
 
     @BeforeEach
     public void setUp() {
 
-        this.depositRetrievalAction = new DepositRetrievalAction(console, session, CLOCK, accountRepository, menuAction, operationFormatter);
+        when(scenario.pollNextAction())
+                .thenReturn(nextAction);
+
+        this.depositRetrievalAction = new DepositRetrievalAction(scenario, console, session, CLOCK, accountRepository, operationFormatter);
     }
 
     @Test
@@ -70,7 +76,9 @@ class DepositRetrievalActionTest {
 
         final Action actual = depositRetrievalAction.execute();
 
-        assertSame(menuAction, actual);
+        assertSame(nextAction, actual);
+        verify(scenario).pollNextAction();
+
         verify(account).deposit(AMOUNT, ZONED_DATE_TIME);
         verify(console).printLines(singletonList(FORMATTED_OPERATION));
     }
@@ -96,7 +104,9 @@ class DepositRetrievalActionTest {
 
         final Action actual = depositRetrievalAction.execute();
 
-        assertSame(menuAction, actual);
+        assertSame(nextAction, actual);
+        verify(scenario).pollNextAction();
+
         verify(account).retrieval(AMOUNT, ZONED_DATE_TIME);
         verify(console).printLines(singletonList(FORMATTED_OPERATION));
     }
